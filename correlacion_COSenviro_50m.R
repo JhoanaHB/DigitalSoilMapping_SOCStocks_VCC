@@ -139,7 +139,7 @@ try(CRF <- mpspline(sp4, 'CRF', d = t(c(0,30))))
 dat <- data.frame(id = sp4@site$IDPROF,
                   X = sp4@sp@coords[,1],
                   Y = sp4@sp@coords[,2],
-                  SOC = SOC$var.std[,1],
+                  SOC = SOC$var.std[,1]*10,#Multiplico por 10 para que quede en g/kg
                   BLD = BLD$var.std[,1],
                   CRF = CRF$var.std[,1])
 head(dat)
@@ -171,7 +171,7 @@ OCSKGM <- OCSKGM(ORCDRC = dat$SOC, BLD = dat$BLD*1000,
 dat$OCSKGM <- OCSKGM
 dat$meaERROR <- attr(OCSKGM,"measurementError")
 dat <- dat[dat$OCSKGM>0,]
-summary(dat) #me da el summary de 241 datos, no de 21 datos
+summary(dat) #me da el summary de 241 datos, no de 21 datos El Stock aquí está en kg/m2
 
 coordinates(dat) <- ~ X + Y
 proj4string(dat) <-crs('+proj=lcc +lat_1=17.5 +lat_2=29.5 +lat_0=12 +lon_0=-102 +x_0=2500000 +y_0=0 +ellps=WGS84 +units=m +no_defs')
@@ -198,15 +198,15 @@ datos <-  spTransform(datos, CRSobj = crs(predictores_50m))
 datos@data <- cbind(datos@data, over(datos, predictores_50m))
 
 
-#hist(shape$CO, xlab='',
- #    ylab='Frecuencia',
-  #   main='Histograma ',
-   #  col= 'red')
+hist(shape$CO, xlab='',
+     ylab='Frecuencia',
+     main='Histograma ',
+     col= 'red')
 #log transformed
-#hist(log1p(shape$CO), xlab='',
- #    ylab='Frecuencia',
-  #   main='Histograma ',
-   #  col= 'red')
+hist(log1p(shape$CO), xlab='',
+     ylab='Frecuencia',
+     main='Histograma ',
+     col= 'red')
 
 datos <- sp.na.omit(datos)
 
@@ -229,18 +229,18 @@ mat <- datos@data[-c(1:4,6)]
 corr <- cor(mat, method='pearson')
 write.csv(as.data.frame(corr),"matriz.Correlacion.csv")
 corrplot(corr, type = 'lower', tl.cex=0.5, tl.col = 'black')
-
-
+# Imprimir explícitamente el gráfico si es necesario
+print(corrplot(corr, type = 'lower', tl.cex = 0.5, tl.col = 'black'))
 
 #Formato para matriz de correlaciones:
-jpeg(filename="CorrplotHQ50m.jpeg", width=2250, height=2250, res=220, quality=220)
+jpeg(filename="Corrplot_covars50m.jpeg", width=2250, height=2250, res=220, quality=220)
 col =c("#BB4444", "#EE9988", "#FFFFFF","#77AADD","#4477AA")
 
 corrplot(corr, title = "Matriz de Correlación COS y Covariables ambientales", 
          mar=c(0,0,1,0), method="shade", shade.col=NA, addshade="all", 
          order="AOE",
          addgrid=TRUE, diag=FALSE, col=col,
-         tl.col = "black" , tl.srt = 70, tl.cex=0.6,
+         tl.col = "black" , tl.srt = 70, tl.cex=0.6,type = 'lower',
          addCoef.col="black",number.cex=0.5)
 dev.off()
 
@@ -275,4 +275,11 @@ plot(raster(predictores_50m['predRFE']))
 
 install.packages("FactoMineR")
 install.packages("FactoInvestigate")
+
+#hist(Mat_Reg_2$OCSKGM)
+#hist(shape$CO,xlab='CO (g/kg)',
+ #    ylab='Frecuencia',
+  #   text(histograma$mids, histograma$counts,labels = histograma$counts, pos = 3, cex = 0.8, col = "blue"
+   #       main='',
+    #      col= 'red')
 

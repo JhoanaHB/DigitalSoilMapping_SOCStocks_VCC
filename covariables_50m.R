@@ -7,6 +7,12 @@ lis <- list.files(pattern='.tif')
 
 #LEER UN RASTER DE REFERENCIA
 ref <- raster('elevation.tif')
+ref <- raster('aspect.tif')
+ref <- raster('bio01.tif')
+ref <- raster('bio02.tif')
+ref <- raster('bio03.tif')
+
+
 
 #GENERAR UN RASTER STACK VACIO
 todos_stack <- stack()
