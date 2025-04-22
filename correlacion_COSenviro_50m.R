@@ -95,7 +95,7 @@ shape@data <- na.omit(shape@data)
 
 #bulk density function
 estimateBD <- function(SOC, method="Saini1966"){
-  #The OM= organic matter content was estimated as OM=SOC concentration * 1.724
+  #The OM= organic matter content (%) was estimated as OM=SOC concentration (%) * 1.724
   OM <- SOC * 1.724 
   if(method=="Saini1966"){BD <- 1.62 - 0.06 * OM}
   if(method=="Jeffrey1979"){BD <- 1.482 - 0.6786 * (log(OM))}
@@ -214,8 +214,8 @@ datos$OCSKGMlog1p <- log1p(datos@data$OCSKGM)
 
 
 #Obtener valores nuevos de COVARIABLES 
-#1 Fijar directorio de trabajo
-#2 setwd("dirección del directorio")
+#Fijar directorio de trabajo
+#2 setwd("dirección del directoriob")
 
 #Cargar librerias necesarias
 library(corrplot)
@@ -223,11 +223,11 @@ library(raster)
 library(rgdal)
 library(moments)
 
-#Crear Matriz
+#Crear Matriz 
 mat <- datos@data[-c(1:4,6)]
 #Crear matriz de correlaciones
 corr <- cor(mat, method='pearson')
-write.csv(as.data.frame(corr),"matriz.Correlacion.csv")
+write.csv(as.data.frame(corr),"matriz.Correlacion_coahuila.csv")
 corrplot(corr, type = 'lower', tl.cex=0.5, tl.col = 'black')
 # Imprimir explícitamente el gráfico si es necesario
 print(corrplot(corr, type = 'lower', tl.cex = 0.5, tl.col = 'black'))
